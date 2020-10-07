@@ -67,14 +67,14 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:key="smart_screen_wake_category"
-        android:title="@string/smart_screen_wake_category_title" >
+        android:key="smart_wake_category"
+        android:title="@string/smart_wake_category_title" >
 
         <SwitchPreference
-            android:key="smart_screen_wake"
+            android:key="smart_wake"
             android:defaultValue="false"
-            android:title="@string/smart_screen_wake_title"
-            android:summary="@string/smart_screen_wake_summary"
+            android:title="@string/smart_wake_title"
+            android:summary="@string/smart_wake_summary"
             android:dependency="pick_up" />
 
     </PreferenceCategory>

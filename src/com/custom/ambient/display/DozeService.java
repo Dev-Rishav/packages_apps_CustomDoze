@@ -30,12 +30,14 @@ public class DozeService extends Service {
 
     private ProximitySensor mProximitySensor;
     private TiltSensor mTiltSensor;
+    private AmdSensor mAmdSensor;
 
     @Override
     public void onCreate() {
         if (DEBUG) Log.d(TAG, "Creating service");
         mProximitySensor = new ProximitySensor(this);
         mTiltSensor = new TiltSensor(this);
+        mAmdSensor = new AmdSensor(this);
 
         IntentFilter screenStateFilter = new IntentFilter(Intent.ACTION_SCREEN_ON);
         screenStateFilter.addAction(Intent.ACTION_SCREEN_OFF);
@@ -55,6 +57,7 @@ public class DozeService extends Service {
         this.unregisterReceiver(mScreenStateReceiver);
         mProximitySensor.disable();
         mTiltSensor.disable();
+        mAmdSensor.disable();
     }
 
     @Override
@@ -66,12 +69,16 @@ public class DozeService extends Service {
         if (DEBUG) Log.d(TAG, "Display on");
         mTiltSensor.disable();
         mProximitySensor.disable();
+        mAmdSensor.disable();
     }
 
     private void onDisplayOff() {
         if (DEBUG) Log.d(TAG, "Display off");
         mTiltSensor.enable();
         mProximitySensor.enable();
+        if (Utils.tiltGestureEnabled(this) && Utils.isSmartWakeEnabled(this)) {
+            mAmdSensor.enable();
+        }
     }
 
     private BroadcastReceiver mScreenStateReceiver = new BroadcastReceiver() {

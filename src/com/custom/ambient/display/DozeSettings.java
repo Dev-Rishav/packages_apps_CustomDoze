@@ -64,7 +64,7 @@ public class DozeSettings extends PreferenceActivity implements PreferenceFragme
         private static final String KEY_CATEGORY_TILT_SENSOR = "tilt_sensor";
         private static final String KEY_CATEGORY_PROXIMITY_SENSOR = "proximity_sensor";
         private static final String KEY_CATEGORY_DOUBLE_TAP = "double_tap";
-        private static final String KEY_CATEGORY_SMART_SCREEN_WAKE = "smart_screen_wake_category";
+        private static final String KEY_CATEGORY_SMART_WAKE = "smart_wake_category";
 
         private Context mContext;
         private ActionBar actionBar;
@@ -72,12 +72,12 @@ public class DozeSettings extends PreferenceActivity implements PreferenceFragme
         private PreferenceCategory mTiltCategory;
         private PreferenceCategory mProximitySensorCategory;
         private PreferenceCategory mDoubleTapCategory;
-        private PreferenceCategory mSmartScreenWakeCategory;
+        private PreferenceCategory mSmartWakeCategory;
         private SwitchPreference mAoDPreference;
         private SwitchPreference mAmbientDisplayPreference;
         private SwitchPreference mPickUpPreference;
         private SwitchPreference mRaiseToWakePreference;
-        private SwitchPreference mSmartScreenWakePreference;
+        private SwitchPreference mSmartWakePreference;
         private SwitchPreference mHandwavePreference;
         private SwitchPreference mPocketPreference;
         private SystemSettingSwitchPreference mDozeOnChargePreference;
@@ -134,10 +134,10 @@ public class DozeSettings extends PreferenceActivity implements PreferenceFragme
             mPocketPreference.setChecked(Utils.pocketGestureEnabled(mContext));
             mPocketPreference.setOnPreferenceChangeListener(this);
 
-            mSmartScreenWakePreference =
-                (SwitchPreference) findPreference(Utils.SMART_SCREEN_WAKE_KEY);
-            mSmartScreenWakePreference.setChecked(Utils.isSmartScreenWakeEnabled(mContext));
-            mSmartScreenWakePreference.setOnPreferenceChangeListener(this);
+            mSmartWakePreference =
+                (SwitchPreference) findPreference(Utils.SMART_WAKE_KEY);
+            mSmartWakePreference.setChecked(Utils.isSmartWakeEnabled(mContext));
+            mSmartWakePreference.setOnPreferenceChangeListener(this);
 
             mTiltCategory = (PreferenceCategory) findPreference(KEY_CATEGORY_TILT_SENSOR);
             if (!getResources().getBoolean(R.bool.has_tilt_sensor)) {
@@ -146,9 +146,9 @@ public class DozeSettings extends PreferenceActivity implements PreferenceFragme
                 mRaiseToWakePreference.setVisible(false);
             }
 
-            mSmartScreenWakeCategory = (PreferenceCategory) findPreference(KEY_CATEGORY_SMART_SCREEN_WAKE);
+            mSmartWakeCategory = (PreferenceCategory) findPreference(KEY_CATEGORY_SMART_WAKE);
             if (!getResources().getBoolean(R.bool.has_amd_tilt_sensor)) {
-                getPreferenceScreen().removePreference(mSmartScreenWakeCategory);
+                getPreferenceScreen().removePreference(mSmartWakeCategory);
             }
 
             mProximitySensorCategory =
@@ -194,9 +194,9 @@ public class DozeSettings extends PreferenceActivity implements PreferenceFragme
                 mPocketPreference.setChecked(value);
                 Utils.enablePocketMode(value, mContext);
                 return true;
-            } else if (Utils.SMART_SCREEN_WAKE_KEY.equals(key)) {
-                mSmartScreenWakePreference.setChecked(value);
-                Utils.enableSmartScreenWake(value, mContext);
+            } else if (Utils.SMART_WAKE_KEY.equals(key)) {
+                mSmartWakePreference.setChecked(value);
+                Utils.enableSmartWake(value, mContext);
                 return true;
             }
             return false;
@@ -207,7 +207,7 @@ public class DozeSettings extends PreferenceActivity implements PreferenceFragme
             mAmbientDisplayPreference.setEnabled(!aodEnabled);
             mPickUpPreference.setEnabled(!aodEnabled);
             mRaiseToWakePreference.setEnabled(!aodEnabled);
-            mSmartScreenWakePreference.setEnabled(!aodEnabled);
+            mSmartWakePreference.setEnabled(!aodEnabled);
             mHandwavePreference.setEnabled(!aodEnabled);
             mPocketPreference.setEnabled(!aodEnabled);
             mDozeOnChargePreference.setEnabled(!aodEnabled);

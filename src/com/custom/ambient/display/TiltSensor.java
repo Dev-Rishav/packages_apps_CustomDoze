@@ -86,25 +86,26 @@ public class TiltSensor implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-	boolean isLiftToCheck = Utils.tiltGestureEnabled(mContext);
         boolean isRaiseToWake = Utils.isRaiseToWakeEnabled(mContext);
-        boolean isSmartScreenWake = Utils.isSmartScreenWakeEnabled(mContext);
+        boolean isSmartWake = Utils.isSmartWakeEnabled(mContext);
 
         if (DEBUG) Log.d(TAG, "Got sensor event: " + event.values[0]);
 
-        if (mSensor == Utils.getSensor(mSensorManager, "qti.sensor.amd")) {
+        if (mContext.getResources().getBoolean(R.bool.has_amd_tilt_sensor)) {
             isAmdSensor = true;
         }
+
+        if (!isSmartWake) {
+            long delta = SystemClock.elapsedRealtime() - mEntryTimestamp;
+            if (delta < MIN_PULSE_INTERVAL_MS) {
+                return;
+            } else {
+                mEntryTimestamp = SystemClock.elapsedRealtime();
+            }
+        }
         if (isAmdSensor) {
-            mSensor = Utils.getSensor(mSensorManager, "qti.sensor.amd");
-            if (event.values[0] == 2)
-                if (isRaiseToWake && !isSmartScreenWake) {
-                    long delta = SystemClock.elapsedRealtime() - mEntryTimestamp;
-                    if (delta < MIN_PULSE_INTERVAL_MS) {
-                        return;
-                    } else {
-                        mEntryTimestamp = SystemClock.elapsedRealtime();
-                    }
+            if (event.values[0] == 0) {
+                if (isRaiseToWake || isSmartWake) {
                     mSensorWakeLock.acquire(WAKELOCK_TIMEOUT_MS);
                     mPowerManager.wakeUp(SystemClock.uptimeMillis(),
                             PowerManager.WAKE_REASON_GESTURE, TAG);
@@ -112,28 +113,7 @@ public class TiltSensor implements SensorEventListener {
                     Utils.launchDozePulse(mContext);
                 }
             }
-            if (isLiftToCheck && isSmartScreenWake) {
-                mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_TILT_DETECTOR);
-                if (event.values[0] == 0) {
-                    mSensor = Utils.getSensor(mSensorManager, "qti.sensor.amd");
-                    mSensorWakeLock.acquire(WAKELOCK_TIMEOUT_MS);
-                    mPowerManager.wakeUp(SystemClock.uptimeMillis(),
-                            PowerManager.WAKE_REASON_GESTURE, TAG);
-                } else {
-                    mSensorManager.registerListener(this, mSensor,
-                            SensorManager.SENSOR_DELAY_NORMAL, BATCH_LATENCY_IN_MS * 1000);
-                    mSensor = Utils.getSensor(mSensorManager, "qti.sensor.amd");
-                }
-            }
-        }
-
-        if (!isAmdSensor) {
-            long delta = SystemClock.elapsedRealtime() - mEntryTimestamp;
-            if (delta < MIN_PULSE_INTERVAL_MS) {
-                return;
-            } else {
-                mEntryTimestamp = SystemClock.elapsedRealtime();
-            }
+        } else {
             if (event.values[0] == 1) {
                 Utils.launchDozePulse(mContext);
             }
