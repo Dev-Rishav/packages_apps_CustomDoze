@@ -43,6 +43,7 @@ public final class Utils {
     protected static final String GESTURE_HAND_WAVE_KEY = "gesture_hand_wave";
     protected static final String GESTURE_POCKET_KEY = "gesture_pocket";
     protected static final String DOUBLE_TAP_KEY = "doze_trigger_doubletap";
+    protected static final String SMART_SCREEN_WAKE_KEY = "smart_screen_wake";
 
     protected static void startService(Context context) {
         if (DEBUG) Log.d(TAG, "Starting service");
@@ -112,6 +113,11 @@ public final class Utils {
                 Settings.System.CUSTOM_AMBIENT_RAISE_GESTURE, 0) != 0;
     }
 
+    protected static boolean isSmartScreenWakeEnabled(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.SMART_SCREEN_WAKE, 0) != 0;
+    }
+
     protected static boolean tiltGestureEnabled(Context context) {
         return Settings.System.getInt(context.getContentResolver(),
                 Settings.System.CUSTOM_AMBIENT_TILT_GESTURE, 0) != 0;
@@ -144,6 +150,13 @@ public final class Utils {
     protected static boolean enableRaiseToWake(boolean enable, Context context) {
         boolean enabled = Settings.System.putInt(context.getContentResolver(),
                 Settings.System.CUSTOM_AMBIENT_RAISE_GESTURE, enable ? 1 : 0);
+        manageService(context);
+        return enabled;
+    }
+
+    protected static boolean enableSmartScreenWake(boolean enable, Context context) {
+        boolean enabled = Settings.System.putInt(context.getContentResolver(),
+                Settings.System.SMART_SCREEN_WAKE, enable ? 1 : 0);
         manageService(context);
         return enabled;
     }

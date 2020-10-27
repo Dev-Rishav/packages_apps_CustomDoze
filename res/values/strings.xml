@@ -25,6 +25,9 @@
 
     <string name="wake_gesture_title">Raise to wake</string>
     <string name="wake_gesture_summary">Pick up your phone to wake up the device instead of pulsing notifications</string>
+    <string name="smart_screen_wake_title">Smart Raise to wake</string>
+    <string name="smart_screen_wake_summary">Pulse notification on slight motion of the device and wake when picked up</string>
+    <string name="smart_screen_wake_category_title">Tilt Sensor +</string>
 
     <!-- Proximity sensor -->
     <string name="proximity_sensor_title">Proximity sensor</string>
