@@ -86,6 +86,7 @@ public class TiltSensor implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
+	boolean isLiftToCheck = Utils.tiltGestureEnabled(mContext);
         boolean isRaiseToWake = Utils.isRaiseToWakeEnabled(mContext);
         boolean isSmartScreenWake = Utils.isSmartScreenWakeEnabled(mContext);
 
@@ -111,7 +112,7 @@ public class TiltSensor implements SensorEventListener {
                     Utils.launchDozePulse(mContext);
                 }
             }
-            if (isSmartScreenWake) {
+            if (isLiftToCheck && isSmartScreenWake) {
                 mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_TILT_DETECTOR);
                 if (event.values[0] == 0) {
                     mSensor = Utils.getSensor(mSensorManager, "qti.sensor.amd");
